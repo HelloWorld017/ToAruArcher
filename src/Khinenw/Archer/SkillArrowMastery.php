@@ -8,7 +8,7 @@ use Khinenw\AruPG\ToAruPG;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\Item;
 
-class ArrowMastery implements Skill{
+class SkillArrowMastery implements Skill{
 
 	private $player;
 	private $level;

@@ -29,7 +29,14 @@ class JobArcher implements Job{
 	 * @return Skill[] Skill list which can be get
 	 */
 	public static function getSkills(){
-		return [Archery::ARCHER_ID_BASE, Archery::ARCHER_ID_BASE + 1, Archery::ARCHER_ID_BASE + 2, Archery::ARCHER_ID_BASE + 3, Archery::ARCHER_ID_BASE + 4];
+		return [
+			Archery::ARCHER_ID_BASE,
+			Archery::ARCHER_ID_BASE + 1,
+			Archery::ARCHER_ID_BASE + 2,
+			Archery::ARCHER_ID_BASE + 3,
+			Archery::ARCHER_ID_BASE + 4,
+			Archery::ARCHER_ID_BASE + 5
+		];
 	}
 
 	/**
@@ -51,7 +58,7 @@ class JobArcher implements Job{
 
 		if($player->hasSkill(Archery::ARCHER_ID_BASE + 4)){
 			/**
-			 * @var $mastery ArrowMastery
+			 * @var $mastery SkillArrowMastery
 			 */
 			$mastery = $player->getSkillById(Archery::ARCHER_ID_BASE + 4);
 			$damage += $mastery->getCurrentAttackIncrease();

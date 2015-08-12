@@ -26,15 +26,23 @@ class Archery extends PluginBase implements Listener{
 	//´Œ!
 	const ARCHER_ID_BASE = 72;
 
+	private static $instance;
+
 	public function onEnable(){
 		JobManager::registerJob(new JobArcher());
 		SkillManager::registerSkill(new SkillArrowRepeat());
 		SkillManager::registerSkill(new SkillDash());
 		SkillManager::registerSkill(new SkillDualArrow());
 		SkillManager::registerSkill(new SkillExplosionArrow());
-		SkillManager::registerSkill(new ArrowMastery());
+		SkillManager::registerSkill(new SkillArrowMastery());
+		SkillManager::registerSkill(new SkillSplitShot());
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		Entity::registerEntity("Khinenw\\Archer\\EffectArrow");
+		self::$instance = $this;
+	}
+
+	public static function getInstance(){
+		return self::$instance;
 	}
 
 	public function onEntityHitByProjectile(EntityDamageEvent $event){

@@ -7,10 +7,14 @@ use Khinenw\AruPG\Skill;
 use Khinenw\AruPG\ToAruPG;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\Item;
+use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\Double;
 use pocketmine\nbt\tag\Int;
+use pocketmine\plugin\Plugin;
+use pocketmine\scheduler\PluginTask;
+use pocketmine\Server;
 
-class SkillArrowRepeat implements Skill{
+class SkillSplitShot implements Skill{
 
 	private $player;
 	private $level;
@@ -33,7 +37,7 @@ class SkillArrowRepeat implements Skill{
 	}
 
 	public static function getId(){
-		return Archery::ARCHER_ID_BASE;
+		return Archery::ARCHER_ID_BASE + 5;
 	}
 
 	public function setPlayer(RPGPlayer $player){
@@ -45,38 +49,13 @@ class SkillArrowRepeat implements Skill{
 	}
 
 	public function onActiveUse(PlayerInteractEvent $event){
-		$directionVector = $this->player->getPlayer()->getDirectionVector()->multiply(3);
-
-		$pos = $event->getPlayer()->getPosition()->add(0, $event->getPlayer()->getEyeHeight(), 0);
-
-		for($i = 0; $i < ((int)(5 + $this->level / 2)); $i++){
-			$arrow = Archery::createEffectArrow(
-				$event->getPlayer(),
-				$pos->add(0.5 - (1 / mt_rand(1, 3)), 0.5 - (1 / mt_rand(1, 3)), 0.5 - (1 / mt_rand(1, 3))),
-				$directionVector,
-				$event->getPlayer()->getYaw(),
-				$event->getPlayer()->getPitch(),
-				0,
-				120,
-				255,
-				true
-			);
-
-			$arrow->namedtag["ArcheryDamage"] = new Double("ArcheryDamage", ((
-					$this->player->getCurrentJob()->getArmorBaseDamage($this->player) +
-					$this->player->getCurrentJob()->getBaseDamage($this->player)
-				) *
-				(1 + ($this->level / 10))));
-			$arrow->namedtag["Custom"] = new Int("Custom", 1);
-			$event->getPlayer()->getLevel()->addEntity($arrow);
-			$arrow->spawnToAll();
-		}
-
+		$this->player->getPlayer()->setMotion(new Vector3(0, 1.5, 0));
+		Server::getInstance()->getScheduler()->scheduleDelayedTask(new SplitShotTask(Archery::getInstance(), $this->player, $this->level), 10);
 		return true;
 	}
 
 	public function getRequiredMana(){
-		return 75 + $this->level * 5;
+		return 115 + $this->level * 5;
 	}
 
 	public static function getRequiredLevel(){
@@ -84,11 +63,11 @@ class SkillArrowRepeat implements Skill{
 	}
 
 	public static function getName(){
-		return "ARROW_REPEAT";
+		return "SPLIT_SHOT";
 	}
 
 	public static function getItem(){
-		return Item::get(Item::ARROW, 0, 1);
+		return Item::get(Item::FLINT, 0, 1);
 	}
 
 	public function getLevel(){
@@ -106,15 +85,13 @@ class SkillArrowRepeat implements Skill{
 	public function getSkillDescription(){
 		$text = ToAruPG::getTranslation("ARROW_REPEAT_DESC") . "\n" .
 			ToAruPG::getTranslation("CURRENT_LEVEL") . "\n" .
-			ToAruPG::getTranslation("ARROW_REPEAT_SHOOT_ARROW", (int)(5 + (($this->level) / 2))) . "\n" .
-			ToAruPG::getTranslation("ARROW_DAMAGE", "1" . ($this->level) . "0%") . "\n" .
+			ToAruPG::getTranslation("ARROW_DAMAGE", "1" . ($this->level * 2) . "0%") . "\n" .
 			ToAruPG::getTranslation("MANA_USE", (75 + (($this->getLevel()) * 5))) . "\n";
 
 		if($this->canInvestSP(1)){
 			$text .= ToAruPG::getTranslation("NEXT_LEVEL"). ":" . "\n" .
-			ToAruPG::getTranslation("ARROW_REPEAT_SHOOT_ARROW", (int)(5 + (($this->level + 1) / 2))) . "\n" .
-			ToAruPG::getTranslation("ARROW_DAMAGE", "1" . ($this->level + 1) . "0%") . "\n" .
-			ToAruPG::getTranslation("MANA_USE", (75 + (($this->getLevel() + 1) * 5)));
+				ToAruPG::getTranslation("ARROW_DAMAGE", "1" . ($this->level + 2) . "0%") . "\n" .
+				ToAruPG::getTranslation("MANA_USE", (75 + (($this->getLevel() + 1) * 5)));
 		}
 
 		return $text;
@@ -122,5 +99,45 @@ class SkillArrowRepeat implements Skill{
 
 	public function setLevel($level){
 		$this->level = $level;
+	}
+}
+
+class SplitShotTask extends PluginTask{
+
+	private $player;
+	private $level;
+
+	public function __construct(Plugin $plugin, RPGPlayer $player, $level){
+		parent::__construct($plugin);
+		$this->player = $player;
+		$this->level = $level;
+	}
+
+	public function onRun($currentTick){
+		if(!ToAruPG::getInstance()->isValidPlayer($this->player->getPlayer())) return;
+		$pos = $this->player->getPlayer()->getPosition();
+
+		for($i = 0; $i < 20; $i++){
+			$arrow = Archery::createEffectArrow(
+				$this->player->getPlayer(),
+				$pos,
+				new Vector3((mt_rand(-5, 5) / 5), -1, (mt_rand(-5, 5) / 5)),
+				0,
+				-90,
+				255,
+				0,
+				120,
+				false
+			);
+
+			$arrow->namedtag["ArcheryDamage"] = new Double("ArcheryDamage", ((
+					$this->player->getCurrentJob()->getArmorBaseDamage($this->player) +
+					$this->player->getCurrentJob()->getBaseDamage($this->player)
+				) *
+				(1 + ($this->level / 10))));
+			$arrow->namedtag["Custom"] = new Int("Custom", 1);
+			$this->player->getPlayer()->getLevel()->addEntity($arrow);
+			$arrow->spawnToAll();
+		}
 	}
 }

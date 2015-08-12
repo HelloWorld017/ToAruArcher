@@ -72,7 +72,7 @@ class SkillExplosionArrow implements Skill{
 	}
 
 	public static function getRequiredLevel(){
-		return 3;
+		return 40;
 	}
 
 	public static function getName(){
