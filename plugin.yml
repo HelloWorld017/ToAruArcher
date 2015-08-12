@@ -1,0 +1,7 @@
+name: "Archer"
+author: Khinenw
+version: 0.1.0 beta
+description: "Archer job for ToAruPG."
+main: Khinenw\Archer\Archery
+api: 1.12.0
+depend: [TAPGAPI]
