@@ -23,11 +23,11 @@ class SkillArrowRepeat implements Skill{
 	public static function __init(){}
 
 	public static function canBeAcquired(RPGPlayer $player){
-		return (($player->getCurrentJob()->getId() === JobArcher::getId()) && ($player->getStatus()->level >= 3));
+		return (($player->getCurrentJob()->getId() === JobArcher::getId()) && ($player->getStatus()->level >= 40));
 	}
 
 	public function canInvestSP($sp){
-		if($this->level <= 5) return true;
+		if($this->level + $sp <= 5) return true;
 
 		return false;
 	}
@@ -49,7 +49,7 @@ class SkillArrowRepeat implements Skill{
 
 		$pos = $event->getPlayer()->getPosition()->add(0, $event->getPlayer()->getEyeHeight(), 0);
 
-		for($i = 0; $i < ((int)(5 + $this->level / 2)); $i++){
+		for($i = 0; $i < (int)(5 + (($this->level) / 2)); $i++){
 			$arrow = Archery::createEffectArrow(
 				$event->getPlayer(),
 				$pos->add(0.5 - (1 / mt_rand(1, 3)), 0.5 - (1 / mt_rand(1, 3)), 0.5 - (1 / mt_rand(1, 3))),

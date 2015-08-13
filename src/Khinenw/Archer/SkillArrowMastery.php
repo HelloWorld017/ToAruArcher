@@ -25,7 +25,7 @@ class SkillArrowMastery implements Skill{
 	}
 
 	public function canInvestSP($sp){
-		if($this->level <= 15) return true;
+		if($this->level + $sp <= 15) return true;
 
 		return false;
 	}
@@ -43,7 +43,7 @@ class SkillArrowMastery implements Skill{
 	}
 
 	public function onActiveUse(PlayerInteractEvent $event){
-
+		return false;
 	}
 
 	public function getPlayer(){
@@ -63,7 +63,7 @@ class SkillArrowMastery implements Skill{
 	}
 
 	public static function getItem(){
-		return Item::get(Item::AIR, 0, 1);
+		return Item::get(Item::IRON_BAR, 0, 1);
 	}
 
 	public function getLevel(){
@@ -76,7 +76,7 @@ class SkillArrowMastery implements Skill{
 	}
 
 	public function getSkillDescription(){
-		$text = ToAruPG::getTranslation("ARROW_REPEAT_DESC") . "\n" .
+		$text = ToAruPG::getTranslation("ARROW_MASTERY_DESC") . "\n" .
 			ToAruPG::getTranslation("CURRENT_LEVEL") . "\n" .
 			ToAruPG::getTranslation("ARROW_MASTERY_ATTACK_INCREASE", ($this->level * 5)) . "\n";
 

@@ -27,7 +27,7 @@ class SkillDualArrow implements Skill{
 	}
 
 	public function canInvestSP($sp){
-		if($this->level <= 10) return true;
+		if($this->level + $sp <= 10) return true;
 
 		return false;
 	}
@@ -100,15 +100,15 @@ class SkillDualArrow implements Skill{
 	}
 
 	public function getSkillDescription(){
-		$text = ToAruPG::getTranslation("ARROW_REPEAT_DESC") . "\n" .
+		$text = ToAruPG::getTranslation("DUAL_ARROW_DESC") . "\n" .
 			ToAruPG::getTranslation("CURRENT_LEVEL") . "\n" .
 			ToAruPG::getTranslation("ARROW_DAMAGE", "1" . ($this->level) . "0%") . "\n" .
-			ToAruPG::getTranslation("MANA_USE", (75 + (($this->getLevel()) * 5))) . "\n";
+			ToAruPG::getTranslation("MANA_USE", (25 + (($this->getLevel()) * 5))) . "\n";
 
 		if($this->canInvestSP(1)){
 			$text .= ToAruPG::getTranslation("NEXT_LEVEL"). ":" . "\n" .
 				ToAruPG::getTranslation("ARROW_DAMAGE", "1" . ($this->level + 1) . "0%") . "\n" .
-				ToAruPG::getTranslation("MANA_USE", (75 + (($this->getLevel() + 1) * 5)));
+				ToAruPG::getTranslation("MANA_USE", (25 + (($this->getLevel() + 1) * 5)));
 		}
 
 		return $text;

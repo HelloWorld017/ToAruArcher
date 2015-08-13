@@ -4,6 +4,7 @@ namespace Khinenw\Archer;
 
 use Khinenw\AruPG\JobManager;
 use Khinenw\AruPG\SkillManager;
+use Khinenw\AruPG\ToAruPG;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Projectile;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -36,8 +37,10 @@ class Archery extends PluginBase implements Listener{
 		SkillManager::registerSkill(new SkillExplosionArrow());
 		SkillManager::registerSkill(new SkillArrowMastery());
 		SkillManager::registerSkill(new SkillSplitShot());
+		SkillManager::registerSkill(new SkillQuickShot());
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		Entity::registerEntity("Khinenw\\Archer\\EffectArrow");
+		ToAruPG::addAllTranslation($this->getResource("translation.yml"));
 		self::$instance = $this;
 	}
 

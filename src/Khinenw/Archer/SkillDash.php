@@ -29,7 +29,9 @@ class SkillDash implements Skill{
 	}
 
 	public function canInvestSP($sp){
-		return ($this->level < 10);
+		if($this->level + $sp <= 10) return true;
+
+		return false;
 	}
 
 	public static function getId(){

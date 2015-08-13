@@ -22,11 +22,11 @@ class SkillExplosionArrow implements Skill{
 	public static function __init(){}
 
 	public static function canBeAcquired(RPGPlayer $player){
-		return (($player->getCurrentJob()->getId() === JobArcher::getId()) && ($player->getStatus()->level >= 3));
+		return (($player->getCurrentJob()->getId() === JobArcher::getId()) && ($player->getStatus()->level >= 40));
 	}
 
 	public function canInvestSP($sp){
-		if($this->level <= 5) return true;
+		if($this->level + $sp <= 5) return true;
 
 		return false;
 	}
@@ -68,7 +68,7 @@ class SkillExplosionArrow implements Skill{
 	}
 
 	public function getRequiredMana(){
-		return Archery::ARCHER_ID_BASE + 1;
+		return 120 + $this->level * 5;
 	}
 
 	public static function getRequiredLevel(){
@@ -92,15 +92,15 @@ class SkillExplosionArrow implements Skill{
 	}
 
 	public function getSkillDescription(){
-		$text = ToAruPG::getTranslation("ARROW_REPEAT_DESC") . "\n" .
+		$text = ToAruPG::getTranslation("EXPLOSION_ARROW_DESC") . "\n" .
 			ToAruPG::getTranslation("CURRENT_LEVEL") . "\n" .
 			ToAruPG::getTranslation("EXPLOSION_DAMAGE", $this->level . "\n" .
-			ToAruPG::getTranslation("MANA_USE", (75 + (($this->getLevel()) * 5)))) . "\n";
+			ToAruPG::getTranslation("MANA_USE", (120 + (($this->getLevel()) * 5)))) . "\n";
 
 		if($this->canInvestSP(1)){
 			$text .= ToAruPG::getTranslation("NEXT_LEVEL"). ":" . "\n" .
 				ToAruPG::getTranslation("EXPLOSION_DAMAGE", $this->level + 1) . "\n" .
-				ToAruPG::getTranslation("MANA_USE", (75 + (($this->getLevel() + 1) * 5)));
+				ToAruPG::getTranslation("MANA_USE", (120 + (($this->getLevel() + 1) * 5)));
 		}
 
 		return $text;

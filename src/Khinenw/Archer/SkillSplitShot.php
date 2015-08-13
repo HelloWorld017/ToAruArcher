@@ -27,11 +27,11 @@ class SkillSplitShot implements Skill{
 	public static function __init(){}
 
 	public static function canBeAcquired(RPGPlayer $player){
-		return (($player->getCurrentJob()->getId() === JobArcher::getId()) && ($player->getStatus()->level >= 3));
+		return (($player->getCurrentJob()->getId() === JobArcher::getId()) && ($player->getStatus()->level >= 40));
 	}
 
 	public function canInvestSP($sp){
-		if($this->level <= 5) return true;
+		if($this->level + $sp <= 5) return true;
 
 		return false;
 	}
@@ -83,15 +83,15 @@ class SkillSplitShot implements Skill{
 	}
 
 	public function getSkillDescription(){
-		$text = ToAruPG::getTranslation("ARROW_REPEAT_DESC") . "\n" .
+		$text = ToAruPG::getTranslation("SPLIT_SHOT_DESC") . "\n" .
 			ToAruPG::getTranslation("CURRENT_LEVEL") . "\n" .
-			ToAruPG::getTranslation("ARROW_DAMAGE", "1" . ($this->level * 2) . "0%") . "\n" .
-			ToAruPG::getTranslation("MANA_USE", (75 + (($this->getLevel()) * 5))) . "\n";
+			ToAruPG::getTranslation("ARROW_DAMAGE", "2" . ($this->level) . "0%") . "\n" .
+			ToAruPG::getTranslation("MANA_USE", (115 + (($this->getLevel()) * 5))) . "\n";
 
 		if($this->canInvestSP(1)){
 			$text .= ToAruPG::getTranslation("NEXT_LEVEL"). ":" . "\n" .
-				ToAruPG::getTranslation("ARROW_DAMAGE", "1" . ($this->level + 2) . "0%") . "\n" .
-				ToAruPG::getTranslation("MANA_USE", (75 + (($this->getLevel() + 1) * 5)));
+				ToAruPG::getTranslation("ARROW_DAMAGE", "2" . ($this->level + 1) . "0%") . "\n" .
+				ToAruPG::getTranslation("MANA_USE", (115 + (($this->getLevel() + 1) * 5)));
 		}
 
 		return $text;
@@ -134,7 +134,7 @@ class SplitShotTask extends PluginTask{
 					$this->player->getCurrentJob()->getArmorBaseDamage($this->player) +
 					$this->player->getCurrentJob()->getBaseDamage($this->player)
 				) *
-				(1 + ($this->level / 10))));
+				(2 + ($this->level / 10))));
 			$arrow->namedtag["Custom"] = new Int("Custom", 1);
 			$this->player->getPlayer()->getLevel()->addEntity($arrow);
 			$arrow->spawnToAll();
