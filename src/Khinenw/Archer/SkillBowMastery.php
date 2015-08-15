@@ -76,7 +76,7 @@ class SkillBowMastery extends PassiveSkill{
 	}
 
 	public function getSkillDescription(){
-		$text = ToAruPG::getTranslation("ARROW_MASTERY_DESC") . "\n" .
+		$text = ToAruPG::getTranslation("BOW_MASTERY_DESC") . "\n" .
 			ToAruPG::getTranslation("CURRENT_LEVEL") . "\n" .
 			ToAruPG::getTranslation("DEX_INCREASE", ($this->level * 3)) . "\n";
 

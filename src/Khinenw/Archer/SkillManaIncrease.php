@@ -76,7 +76,7 @@ class SkillManaIncrease extends PassiveSkill{
 	}
 
 	public function getSkillDescription(){
-		$text = ToAruPG::getTranslation("ARROW_MASTERY_DESC") . "\n" .
+		$text = ToAruPG::getTranslation("MANA_INCREASE_DESC") . "\n" .
 			ToAruPG::getTranslation("CURRENT_LEVEL") . "\n" .
 			ToAruPG::getTranslation("MAX_MANA_INCREASE", ($this->level * 100)) . "\n";
 
