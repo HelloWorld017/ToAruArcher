@@ -5,6 +5,7 @@ namespace Khinenw\Archer;
 use Khinenw\AruPG\Job;
 use Khinenw\AruPG\RPGPlayer;
 use Khinenw\AruPG\Skill;
+use Khinenw\AruPG\Status;
 
 class JobArcher implements Job{
 
@@ -36,7 +37,9 @@ class JobArcher implements Job{
 			Archery::ARCHER_ID_BASE + 3,
 			Archery::ARCHER_ID_BASE + 4,
 			Archery::ARCHER_ID_BASE + 5,
-			Archery::ARCHER_ID_BASE + 6
+			Archery::ARCHER_ID_BASE + 6,
+			Archery::ARCHER_ID_BASE + 7,
+			Archery::ARCHER_ID_BASE + 8
 		];
 	}
 
@@ -50,12 +53,12 @@ class JobArcher implements Job{
 	}
 
 	/**
-	 * @method int getArmorBaseDamage(RPGPlayer $player) Armor base damage which will be shown in /ability
+	 * @method int getAdditionalBaseDamage(RPGPlayer $player) Armor base damage which will be shown in /ability
 	 * @param RPGPlayer $player the player whose base damage will be returned
 	 * @return int Base damage of armor (Mostly, it is gotten by (main ability / 2) + 3
 	 */
-	public static function getArmorBaseDamage(RPGPlayer $player){
-		$damage = ($player->getArmorStatus()->dex / 2) + 3;
+	public static function getAdditionalBaseDamage(RPGPlayer $player){
+		$damage = ($player->getAdditionalValue(Status::DEX) / 2) + 3;
 
 		if($player->hasSkill(Archery::ARCHER_ID_BASE + 4)){
 			/**

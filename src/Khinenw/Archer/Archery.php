@@ -38,6 +38,8 @@ class Archery extends PluginBase implements Listener{
 		SkillManager::registerSkill(new SkillArrowMastery());
 		SkillManager::registerSkill(new SkillSplitShot());
 		SkillManager::registerSkill(new SkillQuickShot());
+		SkillManager::registerSkill(new SkillManaIncrease());
+		SkillManager::registerSkill(new SkillBowMastery());
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		Entity::registerEntity("Khinenw\\Archer\\EffectArrow");
 		ToAruPG::addAllTranslation($this->getResource("translation.yml"));

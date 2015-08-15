@@ -2,13 +2,13 @@
 
 namespace Khinenw\Archer;
 
+use Khinenw\AruPG\PassiveSkill;
 use Khinenw\AruPG\RPGPlayer;
-use Khinenw\AruPG\Skill;
 use Khinenw\AruPG\ToAruPG;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\Item;
 
-class SkillArrowMastery implements Skill{
+class SkillManaIncrease extends PassiveSkill{
 
 	private $player;
 	private $level;
@@ -21,17 +21,17 @@ class SkillArrowMastery implements Skill{
 	public static function __init(){}
 
 	public static function canBeAcquired(RPGPlayer $player){
-		return (($player->getCurrentJob()->getId() === JobArcher::getId()));
+		return (($player->getCurrentJob()->getId() === JobArcher::getId()) && ($player->getStatus()->level > 40));
 	}
 
 	public function canInvestSP($sp){
-		if($this->level + $sp <= 15) return true;
+		if($this->level + $sp <= 20) return true;
 
 		return false;
 	}
 
 	public static function getId(){
-		return Archery::ARCHER_ID_BASE + 4;
+		return Archery::ARCHER_ID_BASE + 7;
 	}
 
 	public function setPlayer(RPGPlayer $player){
@@ -39,7 +39,7 @@ class SkillArrowMastery implements Skill{
 	}
 
 	public function onPassiveInit(){
-
+		$this->player->getSkillStatus()->maxMp += $this->level * 100;
 	}
 
 	public function onActiveUse(PlayerInteractEvent $event){
@@ -55,15 +55,15 @@ class SkillArrowMastery implements Skill{
 	}
 
 	public static function getRequiredLevel(){
-		return 0;
+		return 40;
 	}
 
 	public static function getName(){
-		return "ARROW_MASTERY";
+		return "SKILL_MANA_INCREASE";
 	}
 
 	public static function getItem(){
-		return Item::get(Item::IRON_INGOT, 0, 1);
+		return Item::get(Item::DIAMOND, 0, 1);
 	}
 
 	public function getLevel(){
@@ -72,23 +72,24 @@ class SkillArrowMastery implements Skill{
 
 	public function investSP($sp){
 		$this->level += $sp;
+		$this->player->getSkillStatus()->maxMp += 100;
 	}
 
 	public function getSkillDescription(){
 		$text = ToAruPG::getTranslation("ARROW_MASTERY_DESC") . "\n" .
 			ToAruPG::getTranslation("CURRENT_LEVEL") . "\n" .
-			ToAruPG::getTranslation("ARROW_MASTERY_ATTACK_INCREASE", ($this->level * 5)) . "\n";
+			ToAruPG::getTranslation("MAX_MANA_INCREASE", ($this->level * 100)) . "\n";
 
 		if($this->canInvestSP(1)){
 			$text .= ToAruPG::getTranslation("NEXT_LEVEL"). ":" . "\n" .
-				ToAruPG::getTranslation("ARROW_MASTERY_ATTACK_INCREASE", ($this->level * 5) + 5);
+				ToAruPG::getTranslation("MAX_MANA_INCREASE", ($this->level * 100) + 100);
 		}
 
 		return $text;
 	}
 
-	public function getCurrentAttackIncrease(){
-		return $this->level * 5;
+	public function onSkillStatusReset(){
+		$this->player->getSkillStatus()->maxMp += 100 * $this->level;
 	}
 
 	public function setLevel($level){
