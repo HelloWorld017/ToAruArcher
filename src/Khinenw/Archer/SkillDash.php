@@ -7,9 +7,9 @@ use Khinenw\AruPG\Skill;
 use Khinenw\AruPG\ToAruPG;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\Item;
-use pocketmine\level\Explosion;
 use pocketmine\level\particle\DustParticle;
-use pocketmine\level\Position;
+use pocketmine\network\protocol\ExplodePacket;
+use pocketmine\Server;
 
 
 class SkillDash implements Skill{
@@ -48,11 +48,20 @@ class SkillDash implements Skill{
 		$directionVector = $this->player->getPlayer()->getDirectionVector()->multiply(3);
 		$position = $this->player->getPlayer();
 		$this->player->getPlayer()->setMotion($directionVector);
-		(new Explosion(
+		/*(new Explosion(
 			new Position($position->getX(), $position->getY() + $this->player->getPlayer()->getEyeHeight(), $position->getZ(), $position->getLevel()),
 			$this->level,
 			$this->player->getPlayer()
-		))->explodeB();
+		))->explodeB();*/
+
+		$pk = new ExplodePacket();
+		$pk->x = $position->getX();
+		$pk->y = $position->getY() + $this->player->getPlayer()->getEyeHeight();
+		$pk->z = $position->getZ();
+		$pk->radius = $this->level;
+
+		Server::broadcastPacket($position->getLevel()->getChunkPlayers($position->chunk->getX(), $position->chunk->getZ()), $pk);
+
 		for($i = 1; $i < 50; $i++){
 			$this->player->getPlayer()->getLevel()->addParticle(new DustParticle($position->add(
 				$directionVector->getX() / $i,
