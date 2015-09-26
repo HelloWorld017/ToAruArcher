@@ -2,6 +2,7 @@
 
 namespace Khinenw\Archer;
 
+use Khinenw\AruPG\ToAruPG;
 use pocketmine\entity\Arrow;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
@@ -9,6 +10,7 @@ use pocketmine\level\format\FullChunk;
 use pocketmine\level\particle\DustParticle;
 use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\Int;
+use pocketmine\Player;
 
 class EffectArrow extends Arrow{
 
@@ -30,6 +32,10 @@ class EffectArrow extends Arrow{
 	}
 
 	public function canCollideWith(Entity $entity){
+		if($entity instanceof Player){
+			return ($entity instanceof Living) && (!$this->onGround) && ($entity->getId() !== $this->getDataProperty(self::DATA_SHOOTER_ID) && ToAruPG::$pvpEnabled);
+		}
+
 		return ($entity instanceof Living) && (!$this->onGround) && ($entity->getId() !== $this->getDataProperty(self::DATA_SHOOTER_ID));
 	}
 }

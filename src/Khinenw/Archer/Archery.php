@@ -12,7 +12,6 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\event\Listener;
-use pocketmine\level\Explosion;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\Double;
@@ -29,6 +28,11 @@ class Archery extends PluginBase implements Listener{
 
 	private static $instance;
 
+	/**
+	 * @var ArrowHandler[]
+	 */
+	public static $arrowHandlers;
+
 	public function onEnable(){
 		JobManager::registerJob(new JobArcher());
 		SkillManager::registerSkill(new SkillArrowRepeat());
@@ -40,6 +44,7 @@ class Archery extends PluginBase implements Listener{
 		SkillManager::registerSkill(new SkillQuickShot());
 		SkillManager::registerSkill(new SkillManaIncrease());
 		SkillManager::registerSkill(new SkillBowMastery());
+		SkillManager::registerSkill(new SkillLightningShot());
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		Entity::registerEntity("Khinenw\\Archer\\EffectArrow");
 		ToAruPG::addAllTranslation($this->getResource("translation.yml"));
@@ -63,11 +68,17 @@ class Archery extends PluginBase implements Listener{
 
 	public function onProjectileHit(ProjectileHitEvent $event){
 		if(isset($event->getEntity()->namedtag["ExplosionDamage"])){
-			(new Explosion($event->getEntity()->getPosition(), $event->getEntity()->namedtag["ExplosionDamage"]))->explodeB();
+			(new SafeExplosion($event->getEntity()->getPosition(), $event->getEntity()->namedtag["ExplosionDamage"]))->explodeB();
 		}
 
-		if(isset($event->getEntity()->namedtag["Custom"]) && $event->getEntity()->namedtag["Custom"] === 1){
-			$event->getEntity()->kill();
+		if(isset($event->getEntity()->namedtag["Custom"])){
+			if($event->getEntity()->namedtag["Custom"] === 2 && isset($event->getEntity()->namedtag["Handler"])){
+				self::$arrowHandlers[$event->getEntity()->namedtag["Handler"]]->handle($event);
+			}
+
+			if($event->getEntity()->namedtag["Custom"] >= 1){
+				$event->getEntity()->kill();
+			}
 		}
 	}
 

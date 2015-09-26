@@ -39,7 +39,8 @@ class JobArcher implements Job{
 			Archery::ARCHER_ID_BASE + 5,
 			Archery::ARCHER_ID_BASE + 6,
 			Archery::ARCHER_ID_BASE + 7,
-			Archery::ARCHER_ID_BASE + 8
+			Archery::ARCHER_ID_BASE + 8,
+			Archery::ARCHER_ID_BASE + 9
 		];
 	}
 

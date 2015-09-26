@@ -94,8 +94,8 @@ class SkillExplosionArrow implements Skill{
 	public function getSkillDescription(){
 		$text = ToAruPG::getTranslation("EXPLOSION_ARROW_DESC") . "\n" .
 			ToAruPG::getTranslation("CURRENT_LEVEL") . "\n" .
-			ToAruPG::getTranslation("EXPLOSION_DAMAGE", $this->level . "\n" .
-			ToAruPG::getTranslation("MANA_USE", (120 + (($this->getLevel()) * 5)))) . "\n";
+			ToAruPG::getTranslation("EXPLOSION_DAMAGE", $this->level) . "\n" .
+			ToAruPG::getTranslation("MANA_USE", (120 + (($this->getLevel()) * 5))) . "\n";
 
 		if($this->canInvestSP(1)){
 			$text .= ToAruPG::getTranslation("NEXT_LEVEL"). ":" . "\n" .

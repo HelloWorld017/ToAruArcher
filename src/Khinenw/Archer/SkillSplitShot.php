@@ -107,6 +107,8 @@ class SplitShotTask extends PluginTask{
 	private $player;
 	private $level;
 
+	const SPLIT_SHOT_COUNT = 10;
+
 	public function __construct(Plugin $plugin, RPGPlayer $player, $level){
 		parent::__construct($plugin);
 		$this->player = $player;
@@ -117,7 +119,7 @@ class SplitShotTask extends PluginTask{
 		if(!ToAruPG::getInstance()->isValidPlayer($this->player->getPlayer())) return;
 		$pos = $this->player->getPlayer()->getPosition();
 
-		for($i = 0; $i < 20; $i++){
+		for($i = 0; $i < self::SPLIT_SHOT_COUNT; $i++){
 			$arrow = Archery::createEffectArrow(
 				$this->player->getPlayer(),
 				$pos,

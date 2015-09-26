@@ -127,9 +127,9 @@ class QuickShotTask extends PluginTask{
 			$this->player->getPlayer()->getDirectionVector()->multiply(3),
 			$this->player->getPlayer()->getYaw(),
 			$this->player->getPlayer()->getPitch(),
-			0,
 			255,
-			120,
+			255,
+			0,
 			true
 		);
 
