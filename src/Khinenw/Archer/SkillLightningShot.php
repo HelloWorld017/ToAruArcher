@@ -17,6 +17,7 @@ use pocketmine\nbt\tag\String;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\network\protocol\ExplodePacket;
 use pocketmine\Player;
+use pocketmine\Server;
 
 class SkillLightningShot implements Skill{
 
@@ -103,9 +104,7 @@ class SkillLightningShot implements Skill{
 	}
 
 	public function getDamage(){
-		return ($this->player->getCurrentJob()->getAdditionalBaseDamage($this->player) +
-				$this->player->getCurrentJob()->getBaseDamage($this->player)) *
-				(3 + ($this->level / 10));
+		return ($this->getPlayer()->getCurrentJob()->getFinalDamage($this->getPlayer())) * (3 + ($this->level / 10));
 	}
 
 	public function getFireTick(){
@@ -189,8 +188,14 @@ class HandleLightning implements ArrowHandler{
 
 		foreach($pos->getLevel()->getNearbyEntities($aabb, $shootingEntity) as $e){
 			if($e instanceof Player && !ToAruPG::$pvpEnabled) continue;
-			$e->attack($skill->getDamage(), new EntityDamageByEntityEvent($shootingEntity, $e, EntityDamageByEntityEvent::CAUSE_CUSTOM, $skill->getDamage()));
-			$e->setOnFire($skill->getFireTick());
+			$event = new EntityDamageByEntityEvent($shootingEntity, $e, EntityDamageByEntityEvent::CAUSE_CUSTOM, $skill->getDamage());
+			Server::getInstance()->getPluginManager()->callEvent($event);
+
+			if(!$event->isCancelled()){
+				$e->attack($skill->getDamage(), $event);
+				$thread = new SafeBurnThread($e, $shootingEntity, $skill->getFireTick());
+				$thread->setHandler(Server::getInstance()->getScheduler()->scheduleRepeatingTask($thread, 40));
+			}
 		}
 	}
 }

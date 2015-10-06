@@ -63,8 +63,7 @@ class SkillArrowRepeat implements Skill{
 			);
 
 			$arrow->namedtag["ArcheryDamage"] = new Double("ArcheryDamage", ((
-					$this->player->getCurrentJob()->getAdditionalBaseDamage($this->player) +
-					$this->player->getCurrentJob()->getBaseDamage($this->player)
+					$this->getPlayer()->getCurrentJob()->getFinalDamage($this->getPlayer())
 				) *
 				(1 + ($this->level / 10))));
 			$arrow->namedtag["Custom"] = new Int("Custom", 1);

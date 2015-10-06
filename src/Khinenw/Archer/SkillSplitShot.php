@@ -133,8 +133,7 @@ class SplitShotTask extends PluginTask{
 			);
 
 			$arrow->namedtag["ArcheryDamage"] = new Double("ArcheryDamage", ((
-					$this->player->getCurrentJob()->getAdditionalBaseDamage($this->player) +
-					$this->player->getCurrentJob()->getBaseDamage($this->player)
+					$this->player->getCurrentJob()->getFinalDamage($this->player)
 				) *
 				(2 + ($this->level / 10))));
 			$arrow->namedtag["Custom"] = new Int("Custom", 1);

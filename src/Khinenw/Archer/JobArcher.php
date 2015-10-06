@@ -6,6 +6,7 @@ use Khinenw\AruPG\Job;
 use Khinenw\AruPG\RPGPlayer;
 use Khinenw\AruPG\Skill;
 use Khinenw\AruPG\Status;
+use Khinenw\AruPG\ToAruPG;
 
 class JobArcher implements Job{
 
@@ -61,14 +62,29 @@ class JobArcher implements Job{
 	public static function getAdditionalBaseDamage(RPGPlayer $player){
 		$damage = ($player->getAdditionalValue(Status::DEX) / 2) + 3;
 
-		if($player->hasSkill(Archery::ARCHER_ID_BASE + 4)){
+		if($player->hasSkill(SkillArrowMastery::getId())){
 			/**
 			 * @var $mastery SkillArrowMastery
 			 */
-			$mastery = $player->getSkillById(Archery::ARCHER_ID_BASE + 4);
+			$mastery = $player->getSkillById(SkillArrowMastery::getId());
 			$damage += $mastery->getCurrentAttackIncrease();
 		}
 		return $damage;
 	}
 
+	public static function getApproximation(RPGPlayer $player){
+		$approximation = $player->getStatus()->level * 2;
+		if($player->hasSkill(SkillArrowMastery::getId())){
+			/**
+			 * @var $mastery SkillArrowMastery
+			 */
+			$mastery = $player->getSkillById(SkillArrowMastery::getId());
+			$approximation -= $mastery->getLevel() * 5;
+		}
+		return ($approximation < 0) ? 0 : $approximation;
+	}
+
+	public static function getFinalDamage(RPGPlayer $player){
+		return ToAruPG::randomizeDamage(self::getBaseDamage($player) + self::getAdditionalBaseDamage($player), self::getApproximation($player));
+	}
 }
